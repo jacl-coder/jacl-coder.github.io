@@ -1,0 +1,33 @@
+---
+import type { BlogPost } from '../lib/posts';
+import { excerpt, formatDate, postPath, readingMinutes, tagPath } from '../lib/posts';
+
+interface Props {
+  post: BlogPost;
+  featured?: boolean;
+  index?: number;
+}
+
+const { post, featured = false, index = 0 } = Astro.props;
+---
+
+<article class:list={['post-card', { featured }]}>
+  <div class="post-card-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+  <div class="post-card-body">
+    <div class="post-meta">
+      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+      <span>{readingMinutes(post)} 分钟阅读</span>
+    </div>
+    <h2><a href={postPath(post)}>{post.data.title}</a></h2>
+    <p>{excerpt(post, featured ? 180 : 105)}</p>
+    <div class="post-card-footer">
+      <div class="tag-list" aria-label="文章标签">
+        {post.data.tags.slice(0, 3).map((tag) => <a href={tagPath(tag)}>#{tag}</a>)}
+      </div>
+      <a class="read-link" href={postPath(post)} aria-label={`阅读《${post.data.title}》`}>
+        阅读文章
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortPosts, tagPath, topicPath, uniqueCategories, uniqueTags } from '../../lib/posts';
+
+const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+const categories = uniqueCategories(posts);
+const tags = uniqueTags(posts);
+---
+
+<BaseLayout title="专题" description="按专题与标签探索 JACL Blog。">
+  <section class="page-hero shell compact">
+    <p class="eyebrow">TOPICS / INDEX</p>
+    <h1>从一个问题，<br /><em>走向另一片知识。</em></h1>
+  </section>
+
+  <section class="topics shell">
+    <header class="section-heading simple"><h2>专题</h2><p>按长期关注的方向整理</p></header>
+    <div class="topic-grid">
+      {categories.map((category, index) => {
+        const count = posts.filter((post) => post.data.categories.includes(category)).length;
+        return (
+          <a class="topic-card" href={topicPath(category)}>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <h2>{category}</h2>
+            <p>{count} 篇文章</p>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+        );
+      })}
+    </div>
+
+    <header class="section-heading simple tag-heading"><h2>所有标签</h2><p>{tags.length} 个索引入口</p></header>
+    <div class="tag-cloud">
+      {tags.map((tag) => {
+        const count = posts.filter((post) => post.data.tags.includes(tag)).length;
+        return <a href={tagPath(tag)}><span>#</span>{tag}<sup>{count}</sup></a>;
+      })}
+    </div>
+  </section>
+</BaseLayout>

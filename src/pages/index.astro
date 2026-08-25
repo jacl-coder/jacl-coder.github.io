@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import avatar from '../assets/avatar.png';
+import PostCard from '../components/PostCard.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sortPosts, uniqueCategories, uniqueTags } from '../lib/posts';
+
+const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+const [featured, ...remaining] = posts;
+const tags = uniqueTags(posts);
+const categories = uniqueCategories(posts);
+---
+
+<BaseLayout>
+  <section class="hero shell">
+    <div class="hero-copy">
+      <p class="eyebrow"><span></span> JACL / PERSONAL LOG</p>
+      <h1>把复杂的问题，<br /><em>写成清晰的路径。</em></h1>
+      <p class="hero-intro">
+        这里记录工程实践、游戏开发与偶尔冒出的思考。不是标准答案，
+        是一个开发者持续修正认知的现场。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#latest">开始阅读</a>
+        <a class="button quiet" href="https://github.com/LaiXinpeng" target="_blank" rel="noreferrer">
+          GitHub
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+      </div>
+    </div>
+
+    <aside class="hero-profile" aria-label="博客简介">
+      <div class="profile-topline">
+        <span>NOW / SHANGHAI</span>
+        <span class="status-dot">WRITING</span>
+      </div>
+      <Image src={avatar} width={256} height={256} alt="JACL 的头像" loading="eager" />
+      <div class="profile-caption">
+        <div>
+          <strong>JACL</strong>
+          <span>C++ 菜鸟 / Builder</span>
+        </div>
+        <p>You can make it.</p>
+      </div>
+      <dl class="profile-stats">
+        <div><dt>文章</dt><dd>{posts.length}</dd></div>
+        <div><dt>专题</dt><dd>{categories.length}</dd></div>
+        <div><dt>标签</dt><dd>{tags.length}</dd></div>
+      </dl>
+    </aside>
+  </section>
+
+  <section class="latest-section shell" id="latest">
+    <header class="section-heading">
+      <div>
+        <p class="eyebrow">LATEST NOTES</p>
+        <h2>最近写下的</h2>
+      </div>
+      <a href="/archive/">查看全部 <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <div class="post-list">
+      {featured && <PostCard post={featured} featured index={0} />}
+      {remaining.slice(0, 5).map((post, index) => <PostCard post={post} index={index + 1} />)}
+    </div>
+  </section>
+
+  <section class="manifesto">
+    <div class="shell manifesto-inner">
+      <p>BUILD</p><span>·</span><p>BREAK</p><span>·</span><p>LEARN</p><span>·</span><p>WRITE</p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { excerpt, formatDate, postPath, sortPosts } from '../lib/posts';
+
+const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+const searchIndex = posts.map((post) => ({
+  title: post.data.title,
+  description: excerpt(post, 150),
+  date: formatDate(post.data.date),
+  tags: post.data.tags,
+  categories: post.data.categories,
+  url: postPath(post)
+}));
+const serializedIndex = JSON.stringify(searchIndex).replace(/</g, '\\u003c');
+---
+
+<BaseLayout title="搜索" description="搜索 JACL Blog 的文章。">
+  <section class="page-hero shell compact search-hero">
+    <p class="eyebrow">SEARCH / NOTES</p>
+    <h1>寻找一个<br /><em>问题的入口。</em></h1>
+  </section>
+
+  <section class="search-page shell narrow">
+    <label for="search-input">输入标题、标签或关键词</label>
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+      <input id="search-input" type="search" autocomplete="off" placeholder="例如：Linux、游戏开发、背包问题" />
+      <kbd>/</kbd>
+    </div>
+    <p class="search-status" aria-live="polite">共 {posts.length} 篇文章</p>
+    <div class="search-results"></div>
+  </section>
+
+  <script is:inline type="application/json" id="search-data" set:html={serializedIndex}></script>
+  <script>
+    const input = document.querySelector<HTMLInputElement>('#search-input');
+    const results = document.querySelector<HTMLElement>('.search-results');
+    const status = document.querySelector<HTMLElement>('.search-status');
+    const dataNode = document.querySelector<HTMLScriptElement>('#search-data');
+    const data = JSON.parse(dataNode?.textContent ?? '[]') as Array<{
+      title: string;
+      description: string;
+      date: string;
+      tags: string[];
+      categories: string[];
+      url: string;
+    }>;
+
+    const renderResults = (items: typeof data) => {
+      if (!results || !status) return;
+      results.replaceChildren();
+      status.textContent = items.length === data.length ? `共 ${data.length} 篇文章` : `找到 ${items.length} 篇文章`;
+
+      for (const item of items) {
+        const article = document.createElement('article');
+        article.className = 'search-result';
+        const meta = document.createElement('p');
+        meta.textContent = `${item.date} · ${item.categories[0] ?? '随笔'}`;
+        const heading = document.createElement('h2');
+        const link = document.createElement('a');
+        link.href = item.url;
+        link.textContent = item.title;
+        heading.append(link);
+        const description = document.createElement('p');
+        description.textContent = item.description;
+        article.append(meta, heading, description);
+        results.append(article);
+      }
+
+      if (items.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'search-empty';
+        empty.textContent = '没有找到相关内容，换一个关键词试试。';
+        results.append(empty);
+      }
+    };
+
+    const search = () => {
+      const query = input?.value.trim().toLocaleLowerCase('zh-CN') ?? '';
+      const filtered = query
+        ? data.filter((item) => [item.title, item.description, ...item.tags, ...item.categories].join(' ').toLocaleLowerCase('zh-CN').includes(query))
+        : data;
+      renderResults(filtered);
+    };
+
+    input?.addEventListener('input', search);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === '/' && document.activeElement !== input) {
+        event.preventDefault();
+        input?.focus();
+      }
+    });
+    renderResults(data);
+  </script>
+</BaseLayout>

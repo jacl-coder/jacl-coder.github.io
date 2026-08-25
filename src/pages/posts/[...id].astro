@@ -1,0 +1,103 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  excerpt,
+  formatDate,
+  postPath,
+  readingMinutes,
+  sortPosts,
+  tagPath,
+  topicPath
+} from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+const index = posts.findIndex((entry) => entry.id === post.id);
+const newer = index > 0 ? posts[index - 1] : undefined;
+const older = index < posts.length - 1 ? posts[index + 1] : undefined;
+---
+
+<BaseLayout title={post.data.title} description={excerpt(post, 155)} type="article">
+  <div class="reading-progress" aria-hidden="true"><span></span></div>
+
+  <article class="article-shell">
+    <header class="article-header shell">
+      <a class="article-kicker" href={post.data.categories[0] ? topicPath(post.data.categories[0]) : '/archive/'}>
+        {post.data.categories[0] ?? '随笔'}
+      </a>
+      <h1>{post.data.title}</h1>
+      <p class="article-deck">{excerpt(post, 180)}</p>
+      <div class="article-byline">
+        <div class="byline-avatar" aria-hidden="true">J</div>
+        <div><strong>JACL</strong><span>写作者 / 开发者</span></div>
+        <div class="byline-meta">
+          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          <span>{readingMinutes(post)} 分钟阅读</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="article-layout shell">
+      {toc.length > 0 && (
+        <aside class="article-toc" aria-label="文章目录">
+          <p>本页目录</p>
+          <ol>
+            {toc.map((heading) => (
+              <li class:list={{ nested: heading.depth === 3 }}>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      )}
+
+      <div class="prose">
+        <Content />
+
+        <footer class="article-end">
+          <p>— END —</p>
+          <div class="tag-list">
+            {post.data.tags.map((tag) => <a href={tagPath(tag)}>#{tag}</a>)}
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <nav class="post-navigation shell" aria-label="相邻文章">
+      {older ? (
+        <a href={postPath(older)}><span>上一篇</span><strong>{older.data.title}</strong></a>
+      ) : <span></span>}
+      {newer ? (
+        <a class="next" href={postPath(newer)}><span>下一篇</span><strong>{newer.data.title}</strong></a>
+      ) : <span></span>}
+    </nav>
+  </article>
+
+  <script>
+    const bar = document.querySelector<HTMLElement>('.reading-progress span');
+    const article = document.querySelector<HTMLElement>('.article-shell');
+
+    const updateProgress = () => {
+      if (!bar || !article) return;
+      const start = article.offsetTop;
+      const distance = article.offsetHeight - window.innerHeight;
+      const progress = Math.min(1, Math.max(0, (window.scrollY - start) / distance));
+      bar.style.transform = `scaleX(${progress})`;
+    };
+
+    updateProgress();
+    document.addEventListener('scroll', updateProgress, { passive: true });
+  </script>
+</BaseLayout>
