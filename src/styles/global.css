@@ -44,6 +44,11 @@ article {
 }
 
 @layer utilities {
+  article :not(pre) > code::before,
+  article :not(pre) > code::after {
+    content: none;
+  }
+
   article a {
     @apply font-sans text-current underline underline-offset-2;
     @apply decoration-black/15 dark:decoration-white/30;
