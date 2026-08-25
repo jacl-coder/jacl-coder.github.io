@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-BRANCH ?= source
+BRANCH ?= main
 MSG ?= chore: update blog
 
 .PHONY: help install dev build preview clean status commit deploy

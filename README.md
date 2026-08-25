@@ -32,7 +32,7 @@ make preview
 make deploy MSG="发布新文章"
 ```
 
-该命令会先检查并构建站点，然后暂存、提交全部改动并推送到 `source` 分支。GitHub Actions 收到推送后会继续部署 GitHub Pages。
+该命令会先检查并构建站点，然后暂存、提交全部改动并推送到 `main` 分支。GitHub Actions 收到推送后会继续部署 GitHub Pages。
 
 不传 `MSG` 时，默认提交信息为 `chore: update blog`：
 
