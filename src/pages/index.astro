@@ -20,7 +20,7 @@ const projects = (await getCollection("projects"))
 <PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
     <h1 class="animate font-semibold text-black dark:text-white">
-      Jacl
+      Hi, I'm Jacl 👋🏻
     </h1>
 
     <div class="space-y-16">
@@ -92,11 +92,16 @@ const projects = (await getCollection("projects"))
 
       <section class="animate space-y-4">
         <h2 class="font-semibold text-black dark:text-white">
-          Connect
+          Let's Connect
         </h2>
+        <article>
+          <p>
+            如果你想和我联系，或者只是打个招呼，请在社交媒体上联系我，或者给我发电子邮件。
+          </p>
+        </article>
         <ul class="flex flex-wrap gap-2">
           {SOCIALS.map((social) => (
-            <li>
+            <li class="flex gap-x-2 text-nowrap">
               <Link
                 href={social.HREF}
                 external
@@ -104,8 +109,14 @@ const projects = (await getCollection("projects"))
               >
                 {social.NAME}
               </Link>
+              <span aria-hidden="true">/</span>
             </li>
           ))}
+          <li class="line-clamp-1">
+            <Link href={`mailto:${SITE.EMAIL}`} aria-label={`Email ${SITE.NAME}`}>
+              {SITE.EMAIL}
+            </Link>
+          </li>
         </ul>
       </section>
     </div>
