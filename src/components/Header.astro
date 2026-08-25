@@ -1,69 +1,28 @@
 ---
-const pathname = Astro.url.pathname;
-const links = [
-  { href: '/', label: '首页' },
-  { href: '/archive/', label: '归档' },
-  { href: '/topics/', label: '专题' },
-  { href: '/about/', label: '关于' }
-];
-
-const isActive = (href: string) =>
-  href === '/' ? pathname === '/' : pathname.startsWith(href);
+import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
+import { SITE } from "@consts";
 ---
 
-<header class="site-header">
-  <div class="shell header-inner">
-    <a class="brand" href="/" aria-label="JACL Blog 首页">
-      <span class="brand-mark" aria-hidden="true">J</span>
-      <span class="brand-copy">
-        <strong>JACL</strong>
-        <small>notes on building</small>
-      </span>
-    </a>
-
-    <nav class="site-nav" aria-label="主要导航">
-      {links.map((link) => (
-        <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
-          {link.label}
-        </a>
-      ))}
-    </nav>
-
-    <div class="header-actions">
-      <a class="icon-button" href="/search/" aria-label="搜索文章" title="搜索">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="6.5"></circle>
-          <path d="m16 16 4 4"></path>
-        </svg>
-      </a>
-      <button class="icon-button theme-toggle" type="button" aria-label="切换深色模式" title="切换主题">
-        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="4"></circle>
-          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
-        </svg>
-        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"></path>
-        </svg>
-      </button>
+<header>
+  <Container>
+    <div class="flex flex-wrap gap-y-2 justify-between">
+      <Link href="/" underline={false}>
+        <div class="font-semibold">
+          {SITE.NAME}
+        </div>
+      </Link>
+      <nav class="flex gap-1">
+        <Link href="/blog">
+          blog
+        </Link>
+        <span>
+          {`/`}
+        </span>
+        <Link href="https://github.com/jacl-coder" external>
+          github
+        </Link>
+      </nav>
     </div>
-  </div>
+  </Container>
 </header>
-
-<script>
-  const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
-
-  const syncThemeLabel = () => {
-    const dark = document.documentElement.dataset.theme === 'dark';
-    toggle?.setAttribute('aria-label', dark ? '切换浅色模式' : '切换深色模式');
-  };
-
-  syncThemeLabel();
-
-  toggle?.addEventListener('click', () => {
-    const current = document.documentElement.dataset.theme;
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    localStorage.setItem('theme', next);
-    syncThemeLabel();
-  });
-</script>

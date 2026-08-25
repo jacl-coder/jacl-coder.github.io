@@ -1,9 +1,7 @@
 ---
 title: Systemd 一些常用命令
+description: 整理 Linux Systemd 的基础概念、服务配置与常用管理命令。
 date: 2023-11-03 11:17:10
-tags: [Linux]
-mathjax: true
-categories: Linux
 ---
 ## 一、Systemd 概述
 __Systemd__ 是 Linux 系统工具，用来启动[守护进程](https://www.ruanyifeng.com/blog/2016/02/linux-daemon.html)，已成为大多数发行版的标准配置。根据 Linux 惯例，字母d是守护进程（daemon）的缩写。Systemd 这个名字的含义，就是它要守护整个系统。
@@ -158,4 +156,3 @@ WantedBy=multi-user.target
 上面配置文件中，**RemainAfterExit**字段设为**yes**，表示进程退出以后，服务仍然保持执行。这样的话，一旦使用**systemctl stop**命令停止服务，**ExecStop**指定的命令就会执行，从而重新开启触摸板。
 
 #### 重启行为
-

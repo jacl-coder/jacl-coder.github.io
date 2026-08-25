@@ -18,16 +18,16 @@ help:
 		'make deploy MSG="提交说明"   构建、提交并推送部署'
 
 install:
-	npm ci
+	corepack pnpm install --frozen-lockfile
 
 dev:
-	npm run dev
+	corepack pnpm dev
 
 build:
-	npm run build
+	corepack pnpm build
 
 preview: build
-	npm run preview
+	corepack pnpm preview
 
 clean:
 	rm -rf -- dist .astro

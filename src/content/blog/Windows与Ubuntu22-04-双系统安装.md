@@ -1,9 +1,7 @@
 ---
 title: Windows与Ubuntu22.04 双系统安装
+description: 记录 Windows 11 与 Ubuntu 22.04 双系统的安装环境、分区与配置过程。
 date: 2024-04-15 17:41:43
-tags: [杂项]
-mathjax: true
-categories: 杂项
 ---
 
 ### 一、查看基础环境

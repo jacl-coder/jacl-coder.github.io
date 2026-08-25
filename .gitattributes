@@ -1,4 +1,0 @@
-# 统一使用 LF 作为行尾符号
-* text=auto eol=lf
-*.{cmd,[cC][mM][dD]} text eol=crlf
-*.{bat,[bB][aA][tT]} text eol=crlf 

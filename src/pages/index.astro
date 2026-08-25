@@ -1,74 +1,71 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import avatar from '../assets/avatar.png';
-import PostCard from '../components/PostCard.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { sortPosts, uniqueCategories, uniqueTags } from '../lib/posts';
+import { getCollection } from "astro:content";
+import ArrowCard from "@components/ArrowCard.astro";
+import Container from "@components/Container.astro";
+import Link from "@components/Link.astro";
+import { HOME, SITE, SOCIALS } from "@consts";
+import PageLayout from "@layouts/PageLayout.astro";
 
-const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
-const [featured, ...remaining] = posts;
-const tags = uniqueTags(posts);
-const categories = uniqueCategories(posts);
+const blog = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
 ---
 
-<BaseLayout>
-  <section class="hero shell">
-    <div class="hero-copy">
-      <p class="eyebrow"><span></span> JACL / PERSONAL LOG</p>
-      <h1>把复杂的问题，<br /><em>写成清晰的路径。</em></h1>
-      <p class="hero-intro">
-        这里记录工程实践、游戏开发与偶尔冒出的思考。不是标准答案，
-        是一个开发者持续修正认知的现场。
-      </p>
-      <div class="hero-actions">
-        <a class="button primary" href="#latest">开始阅读</a>
-        <a class="button quiet" href="https://github.com/jacl-coder" target="_blank" rel="noreferrer">
-          GitHub
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-        </a>
-      </div>
-    </div>
+<PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
+  <Container>
+    <h1 class="animate font-semibold text-black dark:text-white">
+      Jacl
+    </h1>
 
-    <aside class="hero-profile" aria-label="博客简介">
-      <div class="profile-topline">
-        <span>NOW / SHANGHAI</span>
-        <span class="status-dot">WRITING</span>
-      </div>
-      <Image src={avatar} width={256} height={256} alt="JACL 的头像" loading="eager" />
-      <div class="profile-caption">
-        <div>
-          <strong>JACL</strong>
-          <span>C++ 菜鸟 / Builder</span>
+    <div class="space-y-16">
+      <section>
+        <article class="space-y-4">
+          <p class="animate">
+            Quantitative Developer，关注交易系统、市场数据、低延迟基础设施与市场微观结构。
+          </p>
+          <p class="animate">
+            这里记录可以公开的研究方法和工程实践，不包含实时策略参数、敏感交易数据或内部系统细节。
+          </p>
+        </article>
+      </section>
+
+      <section class="animate space-y-6">
+        <div class="flex flex-wrap gap-y-2 items-center justify-between">
+          <h2 class="font-semibold text-black dark:text-white">
+            Latest posts
+          </h2>
+          <Link href="/blog">
+            See all posts
+          </Link>
         </div>
-        <p>You can make it.</p>
-      </div>
-      <dl class="profile-stats">
-        <div><dt>文章</dt><dd>{posts.length}</dd></div>
-        <div><dt>专题</dt><dd>{categories.length}</dd></div>
-        <div><dt>标签</dt><dd>{tags.length}</dd></div>
-      </dl>
-    </aside>
-  </section>
+        <ul class="flex flex-col gap-4">
+          {blog.map((post) => (
+            <li>
+              <ArrowCard entry={post} />
+            </li>
+          ))}
+        </ul>
+      </section>
 
-  <section class="latest-section shell" id="latest">
-    <header class="section-heading">
-      <div>
-        <p class="eyebrow">LATEST NOTES</p>
-        <h2>最近写下的</h2>
-      </div>
-      <a href="/archive/">查看全部 <span aria-hidden="true">↗</span></a>
-    </header>
-
-    <div class="post-list">
-      {featured && <PostCard post={featured} featured index={0} />}
-      {remaining.slice(0, 5).map((post, index) => <PostCard post={post} index={index + 1} />)}
+      <section class="animate space-y-4">
+        <h2 class="font-semibold text-black dark:text-white">
+          Connect
+        </h2>
+        <ul class="flex flex-wrap gap-2">
+          {SOCIALS.map((social) => (
+            <li>
+              <Link
+                href={social.HREF}
+                external
+                aria-label={`${SITE.NAME} on ${social.NAME}`}
+              >
+                {social.NAME}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
-  </section>
-
-  <section class="manifesto">
-    <div class="shell manifesto-inner">
-      <p>BUILD</p><span>·</span><p>BREAK</p><span>·</span><p>LEARN</p><span>·</span><p>WRITE</p>
-    </div>
-  </section>
-</BaseLayout>
+  </Container>
+</PageLayout>

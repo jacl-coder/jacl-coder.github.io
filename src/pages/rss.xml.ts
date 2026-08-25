@@ -1,20 +1,27 @@
-import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
-import { excerpt, postPath, sortPosts } from '../lib/posts';
+import rss from "@astrojs/rss";
+import { getCollection } from "astro:content";
+import { HOME, SITE } from "@consts";
 
-export async function GET(context: { site: URL | undefined }) {
-  const posts = sortPosts(await getCollection('blog', ({ data }) => !data.draft));
+type Context = {
+  site: string
+}
+
+export async function GET(context: Context) {
+  const blog = (await getCollection("blog"))
+  .filter(post => !post.data.draft);
+
+  const items = blog
+    .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+
   return rss({
-    title: 'JACL Blog',
-    description: '关于工程、游戏开发与技术实践的个人笔记。',
-    site: context.site ?? 'https://blog.lxp520.top',
-    items: posts.map((post) => ({
-      title: post.data.title,
-      pubDate: post.data.date,
-      description: excerpt(post, 180),
-      link: postPath(post),
-      categories: [...post.data.categories, ...post.data.tags]
+    title: SITE.NAME,
+    description: HOME.DESCRIPTION,
+    site: context.site,
+    items: items.map((item) => ({
+      title: item.data.title,
+      description: item.data.description,
+      pubDate: item.data.date,
+      link: `/${item.collection}/${item.slug}/`,
     })),
-    customData: '<language>zh-CN</language>'
   });
 }

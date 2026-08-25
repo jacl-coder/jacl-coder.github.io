@@ -1,6 +1,16 @@
-export function GET({ site }: { site: URL | undefined }) {
-  const base = site ?? new URL('https://blog.lxp520.top');
-  return new Response(`User-agent: *\nAllow: /\nSitemap: ${new URL('sitemap-index.xml', base)}\n`, {
-    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+import type { APIRoute } from "astro";
+
+const robotsTxt = `
+User-agent: *
+Allow: /
+
+Sitemap: ${new URL("sitemap-index.xml", import.meta.env.SITE).href}
+`.trim();
+
+export const GET: APIRoute = () => {
+  return new Response(robotsTxt, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+    },
   });
-}
+};

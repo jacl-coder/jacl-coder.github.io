@@ -1,9 +1,7 @@
 ---
 title: PixelStorm —— 多人像素风弹幕竞技游戏项目
-mathjax: true
+description: 多人实时对战像素风弹幕游戏的项目定位、目标与技术架构记录。
 date: 2025-07-22 00:21:20
-tags: [PixelStorm, 游戏开发, Unity, Golang]
-categories: 游戏开发
 ---
 
 ## 项目定位
