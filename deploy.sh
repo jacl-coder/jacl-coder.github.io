@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Git 操作
-git pull origin master
+git pull origin source
 
 # 备份 CNAME 文件（如果存在）
 if [ -f "public/CNAME" ]; then
@@ -10,7 +10,7 @@ fi
 
 git add .
 git commit -m "backup"
-git push origin master
+git push origin source
 
 # Hexo 生成和部署
 hexo g

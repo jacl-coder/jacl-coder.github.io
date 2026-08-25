@@ -1,11 +1,11 @@
 @echo off
 
 rem Git 操作
-git pull origin master
+git pull origin source
 
 git add .
 git commit -m "backup"
-git push origin master
+git push origin source
 
 rem Hexo 生成和部署
 hexo g
