@@ -1,22 +1,37 @@
 # build output
 dist/
+coverage/
 
-# generated types
+# generated files and caches
 .astro/
+.cache/
+*.tsbuildinfo
 
 # dependencies
 node_modules/
 
 # logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
+*.log
 
 # environment variables
-.env
-.env.production
+.env*
+!.env.example
 
-# macOS-specific files
+# local deployment state
+.vercel/
+.netlify/
+
+# browser automation
+.playwright-cli/
+playwright-report/
+test-results/
+output/playwright/
+
+# editor files
+.idea/
+.vscode/settings.json
+.vscode/*.local.json
+
+# operating system files
 .DS_Store
+Thumbs.db
