@@ -2,6 +2,8 @@
 
 基于 [Astro Nano](https://github.com/markhorn-dev/astro-nano) 构建的个人技术博客，内容主要涉及量化开发、交易系统与工程实践。
 
+站点分为 Blog、Work 和 Projects 三部分；Work 仅展示可公开的工作方向。
+
 ## 本地开发
 
 ```bash

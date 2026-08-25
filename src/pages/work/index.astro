@@ -1,0 +1,33 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import Container from "@components/Container.astro";
+import { WORK } from "@consts";
+---
+
+<PageLayout title={WORK.TITLE} description={WORK.DESCRIPTION}>
+  <Container>
+    <div class="space-y-10">
+      <div class="animate font-semibold text-black dark:text-white">
+        Work
+      </div>
+      <section class="animate space-y-4">
+        <div>
+          <div class="font-semibold text-black dark:text-white">
+            Quantitative Developer
+          </div>
+          <div class="text-sm opacity-75">
+            Trading Systems · Market Data · Low-Latency Infrastructure
+          </div>
+        </div>
+        <article class="space-y-4">
+          <p>
+            当前专注于量化交易系统、市场数据处理和低延迟基础设施。
+          </p>
+          <p>
+            这里只展示可以公开的工作方向，不包含任职单位、策略参数、交易数据或内部系统信息。
+          </p>
+        </article>
+      </section>
+    </div>
+  </Container>
+</PageLayout>
